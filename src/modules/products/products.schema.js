@@ -37,7 +37,8 @@ export const createProductSchema = z.object({
   precioVenta: z.coerce.number().min(0, 'El precio de venta no puede ser negativo').optional().default(0),
   stock: z.coerce.number().min(0, 'El stock no puede ser negativo').optional().default(0),
   stockMinimo: z.coerce.number().min(0, 'El stock mínimo no puede ser negativo').optional().default(0),
-  activo: z.boolean().optional().default(true)
+  activo: z.boolean().optional().default(true),
+  imagenUrl: nullableString
 })
 
 export const updateProductSchema = z.object({
@@ -52,7 +53,8 @@ export const updateProductSchema = z.object({
   precioVenta: z.coerce.number().min(0, 'El precio de venta no puede ser negativo').optional(),
   stock: z.coerce.number().min(0, 'El stock no puede ser negativo').optional(),
   stockMinimo: z.coerce.number().min(0, 'El stock mínimo no puede ser negativo').optional(),
-  activo: z.boolean().optional()
+  activo: z.boolean().optional(),
+  imagenUrl: z.string().nullable().optional()
 }).refine((data) => Object.keys(data).length > 0, {
   message: 'Debes enviar al menos un campo para actualizar'
 })

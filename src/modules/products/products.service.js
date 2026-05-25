@@ -96,6 +96,7 @@ export class ProductsService {
       unidad: normalizeOptionalText(payload.unidad) || '',
       marca: normalizeOptionalText(payload.marca) || '',
       modelo: normalizeOptionalText(payload.modelo) || '',
+      imagenUrl: normalizeOptionalText(payload.imagenUrl) || '',
       precioCompra: Number(payload.precioCompra ?? 0),
       precioVenta: Number(payload.precioVenta ?? 0),
       stock: Number(payload.stock ?? 0),
@@ -164,7 +165,8 @@ export class ProductsService {
     if (payload.stock !== undefined) data.stock = Number(payload.stock)
     if (payload.stockMinimo !== undefined) data.stockMinimo = Number(payload.stockMinimo)
     if (payload.activo !== undefined) data.activo = payload.activo
-
+    if (payload.imagenUrl !== undefined) data.imagenUrl = normalizeOptionalText(payload.imagenUrl) || ''
+    
     const updated = await productsRepository.update(id, data)
     const sanitized = this.sanitizeProduct(updated)
 
@@ -258,6 +260,7 @@ export class ProductsService {
       precioVenta: Number(product.precioVenta || 0),
       stock: Number(product.stock || 0),
       stockMinimo: Number(product.stockMinimo || 0),
+      imagenUrl: product.imagenUrl || '',
       activo: product.activo ?? true,
       createdAt: product.createdAt || null,
       updatedAt: product.updatedAt || null

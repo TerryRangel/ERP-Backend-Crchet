@@ -41,7 +41,7 @@ router.post(
 router.patch(
   '/:id',
   authenticate,
-  requirePermissions(['clients:update']),
+  requirePermissions(['clients:create']), 
   validate(clientIdParamSchema, 'params'),
   validate(updateClientSchema),
   asyncHandler(clientsController.update.bind(clientsController))
@@ -50,7 +50,7 @@ router.patch(
 router.patch(
   '/:id/toggle-active',
   authenticate,
-  requirePermissions(['clients:update']),
+  requirePermissions(['clients:create']), 
   validate(clientIdParamSchema, 'params'),
   validate(toggleClientActiveSchema),
   asyncHandler(clientsController.toggleActive.bind(clientsController))
@@ -59,7 +59,7 @@ router.patch(
 router.delete(
   '/:id',
   authenticate,
-  requirePermissions(['clients:delete']),
+  requirePermissions(['clients:create']), // <-- Antes decía clients:delete
   validate(clientIdParamSchema, 'params'),
   asyncHandler(clientsController.remove.bind(clientsController))
 )

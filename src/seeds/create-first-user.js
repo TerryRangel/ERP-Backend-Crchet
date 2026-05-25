@@ -2,6 +2,8 @@ import bcrypt from 'bcryptjs'
 import { db } from '../config/firebase.js'
 
 const FIRST_USER = {
+
+
   nombre: 'Proyecto',
   apellido: 'Admin',
   email: 'proyecto@erp.local',
@@ -9,8 +11,20 @@ const FIRST_USER = {
   password: 'Hello2U',
   role: 'ADMIN',
   roleId: 'role_admin',
-  activo: true
+  activo: true,
+
+  
+
+
+
+
+
+  
+
 }
+
+
+
 
 const DEFAULT_PERMISSIONS = [
   { code: 'auth:me', nombre: 'Ver usuario autenticado', descripcion: 'Permite consultar el usuario autenticado', modulo: 'auth' },

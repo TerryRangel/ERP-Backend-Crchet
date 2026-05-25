@@ -1,44 +1,44 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
-const booleanLike = z.union([
-  z.boolean(),
-  z.enum(['true', 'false'])
-]).transform((value) => {
-  if (typeof value === 'boolean') return value
-  return value === 'true'
-})
-
-const recepcionItemSchema = z.object({
-  productId: z.string({ required_error: 'El productId es obligatorio' }).min(1, 'El productId es obligatorio'),
+// Esquema para cada producto capturado manualmente
+const productoManualSchema = z.object({
+  nombre: z.string({ required_error: 'El nombre del producto es obligatorio' }).min(1, 'El nombre es obligatorio'),
   cantidad: z.coerce.number().positive('La cantidad debe ser mayor a 0'),
   costoUnitario: z.coerce.number().min(0, 'El costo unitario no puede ser negativo')
-})
+});
 
+// Schema principal de creación
+export const createRecepcionSchema = z.object({
+  proveedorId: z.string({ required_error: 'El proveedor es obligatorio' }).min(1, 'El proveedor es obligatorio'),
+  documento: z.string().optional().nullable(),
+  estado: z.enum(['ENTREGADO', 'PENDIENTE'], { 
+    errorMap: () => ({ message: 'El estado debe ser ENTREGADO o PENDIENTE' }) 
+  }),
+  productos: z.array(productoManualSchema).min(1, 'Debes agregar al menos un producto'),
+  totalArticulos: z.coerce.number().int().min(0),
+  costoTotal: z.coerce.number().min(0)
+});
+
+// Schema de actualización (ajustado para ser flexible)
+export const updateRecepcionSchema = z.object({
+  proveedorId: z.string().min(1).optional(),
+  documento: z.string().optional().nullable(),
+  estado: z.enum(['ENTREGADO', 'PENDIENTE', 'CANCELADO']).optional(),
+  productos: z.array(productoManualSchema).optional(),
+  totalArticulos: z.coerce.number().optional(),
+  costoTotal: z.coerce.number().optional()
+}).refine((data) => Object.keys(data).length > 0, {
+  message: 'Debes enviar al menos un campo para actualizar'
+});
+
+// Schemas auxiliares (para listar y obtener por ID)
 export const listRecepcionesQuerySchema = z.object({
   q: z.string().optional().default(''),
-  status: z.enum(['DRAFT', 'CONFIRMED']).optional(),
+  status: z.enum(['ENTREGADO', 'PENDIENTE', 'CANCELADO']).optional(),
   page: z.coerce.number().int().min(1).optional().default(1),
   limit: z.coerce.number().int().min(1).max(100).optional().default(10)
-})
+});
 
 export const recepcionIdParamSchema = z.object({
   id: z.string().min(1, 'El id es obligatorio')
-})
-
-export const createRecepcionSchema = z.object({
-  supplierId: z.string({ required_error: 'El supplierId es obligatorio' }).min(1, 'El supplierId es obligatorio'),
-  fecha: z.string({ required_error: 'La fecha es obligatoria' }).min(1, 'La fecha es obligatoria'),
-  folio: z.string({ required_error: 'El folio es obligatorio' }).min(2, 'El folio debe tener al menos 2 caracteres'),
-  comentarios: z.string().optional().nullable(),
-  items: z.array(recepcionItemSchema).min(1, 'Debes agregar al menos una partida')
-})
-
-export const updateRecepcionSchema = z.object({
-  supplierId: z.string().min(1, 'El supplierId es obligatorio').optional(),
-  fecha: z.string().min(1, 'La fecha es obligatoria').optional(),
-  folio: z.string().min(2, 'El folio debe tener al menos 2 caracteres').optional(),
-  comentarios: z.string().nullable().optional(),
-  items: z.array(recepcionItemSchema).min(1, 'Debes agregar al menos una partida').optional()
-}).refine((data) => Object.keys(data).length > 0, {
-  message: 'Debes enviar al menos un campo para actualizar'
-})
+});
