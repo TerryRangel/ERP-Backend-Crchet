@@ -110,31 +110,39 @@ export class AuthService {
     // 5. Configurar Nodemailer
     
 
-   // 5. Configurar Nodemailer
-    const transporter = nodemailer.createTransport({
-      service: 'gmail', // Nodemailer configura automáticamente el host y puerto correctos
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      }
-    });
-
-    // 6. Enviar correo (usamos FRONTEND_URL del .env o localhost por defecto)
+  // 5. Enviar correo usando la API de Resend mediante fetch nativo
     const frontendUrl = process.env.FRONTEND_URL || 'https://crochet-flame-three.vercel.app';
     const resetUrl = `${frontendUrl}/reset-password?token=${resetToken}`;
     
-    await transporter.sendMail({
-      from: `"Soporte ERP" <${process.env.EMAIL_USER}>`,
-      to: user.email,
-      subject: 'Recuperación de Contraseña - ERP',
-      html: `
-        <h2>¿Olvidaste tu contraseña?</h2>
-        <p>Hiciste una solicitud para recuperar tu contraseña. Haz clic en el siguiente enlace para crear una nueva:</p>
-        <a href="${resetUrl}" style="background-color: #8d9b70; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 10px;">Restablecer Contraseña</a>
-        <p style="margin-top: 20px; font-size: 12px; color: #666;">Si no fuiste tú, ignora este correo. El enlace caducará en 1 hora.</p>
-      `
-    });
-  }
+    try {
+      const response = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer re_a8FxP3Hz_D5Muasp4zw8SoxaBbmdG95dz`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          from: 'Soporte ERP <onboarding@resend.dev>', // Este es el correo oficial de prueba de Resend
+          to: user.email,
+          subject: 'Recuperación de Contraseña - ERP',
+          html: `
+            <h2>¿Olvidaste tu contraseña?</h2>
+            <p>Hiciste una solicitud para recuperar tu contraseña. Haz clic en el siguiente enlace para crear una nueva:</p>
+            <a href="${resetUrl}" style="background-color: #8d9b70; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 10px;">Restablecer Contraseña</a>
+            <p style="margin-top: 20px; font-size: 12px; color: #666;">Si no fuiste tú, ignora este correo. El enlace caducará en 1 hora.</p>
+          `
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Error de Resend:', errorData);
+      } else {
+        console.log('Correo de recuperación enviado con éxito vía Resend');
+      }
+    } catch (error) {
+      console.error('Error en la petición a Resend:', error);
+    }
 
   async resetPassword(token, newPassword) {
     // 1. Buscar al usuario por el token
