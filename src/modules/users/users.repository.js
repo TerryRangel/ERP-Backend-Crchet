@@ -57,6 +57,25 @@ export class UsersRepository {
     }
   }
 
+  // ─── AQUÍ ESTÁ LA NUEVA FUNCIÓN QUE FALTABA ───
+  async findByResetToken(token) {
+    const snapshot = await db
+      .collection(COLLECTION)
+      .where('resetPasswordToken', '==', token)
+      .where('resetPasswordExpires', '>', Date.now()) // Valida que no haya caducado
+      .limit(1)
+      .get()
+
+    if (snapshot.empty) return null
+
+    const doc = snapshot.docs[0]
+
+    return {
+      id: doc.id,
+      ...doc.data()
+    }
+  }
+
   async create(data) {
     const ref = await db.collection(COLLECTION).add(data)
     const doc = await ref.get()
