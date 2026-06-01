@@ -117,7 +117,7 @@ export class AuthService {
     });
 
     // 6. Enviar correo (usamos FRONTEND_URL del .env o localhost por defecto)
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const frontendUrl = process.env.FRONTEND_URL || 'https://crochet-flame-three.vercel.app';
     const resetUrl = `${frontendUrl}/reset-password?token=${resetToken}`;
     
     await transporter.sendMail({
