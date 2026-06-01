@@ -8,7 +8,7 @@ export class AuditService {
       action,
       userId,
       page = 1,
-      limit = 1000
+      limit = 100
     } = query
 
     const allLogs = await auditRepository.findAll()
