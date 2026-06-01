@@ -143,6 +143,7 @@ export class AuthService {
     } catch (error) {
       console.error('Error en la petición a Resend:', error);
     }
+  }
 
   async resetPassword(token, newPassword) {
     // 1. Buscar al usuario por el token
