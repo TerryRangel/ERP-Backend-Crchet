@@ -110,18 +110,14 @@ export class AuthService {
     // 5. Configurar Nodemailer
     
 
+   // 5. Configurar Nodemailer
     const transporter = nodemailer.createTransport({
-  host: "74.125.69.108", // smtp.gmail.com IPv4
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-  tls: {
-    servername: "smtp.gmail.com",
-  },
-});
+      service: 'gmail', // Nodemailer configura automáticamente el host y puerto correctos
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      }
+    });
 
     // 6. Enviar correo (usamos FRONTEND_URL del .env o localhost por defecto)
     const frontendUrl = process.env.FRONTEND_URL || 'https://crochet-flame-three.vercel.app';
