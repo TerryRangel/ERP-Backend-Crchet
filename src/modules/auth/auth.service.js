@@ -75,6 +75,7 @@ export class AuthService {
       apellido: user.apellido || '',
       email: user.email || '',
       usuario: user.usuario || '',
+      fotoPerfil: user.fotoPerfil || null,
       role: user.role || null,
       roleId: user.roleId || null,
       permissions: Array.isArray(user.permissions) ? user.permissions : [],
