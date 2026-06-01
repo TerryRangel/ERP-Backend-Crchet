@@ -95,6 +95,7 @@ export class UsersService {
       roleId: payload.roleId || null,
       permissions: Array.isArray(payload.permissions) ? payload.permissions : [],
       activo: payload.activo ?? true,
+      fotoPerfil: payload.fotoPerfil || null, // 👉 1. Lo agregamos al crear
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     }
@@ -160,6 +161,7 @@ export class UsersService {
     if (payload.roleId !== undefined) data.roleId = payload.roleId
     if (payload.permissions !== undefined) data.permissions = payload.permissions
     if (payload.activo !== undefined) data.activo = payload.activo
+    if (payload.fotoPerfil !== undefined) data.fotoPerfil = payload.fotoPerfil // 👉 2. Lo agregamos al actualizar
 
     if (payload.password) {
       data.passwordHash = await bcrypt.hash(payload.password, 10)
@@ -243,6 +245,7 @@ export class UsersService {
     }
   }
 
+  // 👉 3. Lo agregamos aquí para que el Frontend pueda ver la foto
   sanitizeUser(user) {
     return {
       id: user.id,
@@ -250,6 +253,7 @@ export class UsersService {
       apellido: user.apellido || '',
       email: user.email || '',
       usuario: user.usuario || '',
+      fotoPerfil: user.fotoPerfil || null, 
       role: user.role || null,
       roleId: user.roleId || null,
       permissions: Array.isArray(user.permissions) ? user.permissions : [],

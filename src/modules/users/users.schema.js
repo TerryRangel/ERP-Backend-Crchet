@@ -38,7 +38,8 @@ export const createUserSchema = z.object({
   role: z.string().optional().nullable(),
   roleId: z.string().optional().nullable(),
   permissions: z.array(z.string()).optional().default([]),
-  activo: z.boolean().optional().default(true)
+  activo: z.boolean().optional().default(true),
+  fotoPerfil: z.string().url().optional().nullable()
 })
 
 export const updateUserSchema = z.object({
@@ -50,7 +51,8 @@ export const updateUserSchema = z.object({
   role: z.string().nullable().optional(),
   roleId: z.string().nullable().optional(),
   permissions: z.array(z.string()).optional(),
-  activo: z.boolean().optional()
+  activo: z.boolean().optional(),
+  fotoPerfil: z.string().url().optional().nullable()
 }).refine((data) => Object.keys(data).length > 0, {
   message: 'Debes enviar al menos un campo para actualizar'
 })

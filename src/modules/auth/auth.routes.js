@@ -7,6 +7,7 @@ import { requirePermissions } from '../../middlewares/requirePermissions.js'
 import { asyncHandler } from '../../utils/asyncHandler.js'
 import { createClientSchema } from '../clients/clients.schema.js'
 import { loginSchema } from './auth.schema.js'
+import { forgotPasswordSchema, resetPasswordSchema } from './auth.schema.js'
 
 const router = Router()
 
@@ -27,6 +28,18 @@ router.get(
   authenticate,
   requirePermissions(['auth:me']),
   asyncHandler(authController.me.bind(authController))
+)
+router.post(
+  '/forgot-password',
+  validate(forgotPasswordSchema),
+  asyncHandler(authController.forgotPassword.bind(authController))
+)
+
+// Ruta 2: El usuario envía su nueva contraseña con el token
+router.post(
+  '/reset-password',
+  validate(resetPasswordSchema),
+  asyncHandler(authController.resetPassword.bind(authController))
 )
 
 export default router

@@ -41,7 +41,14 @@ router.post(
 router.patch(
   '/:id',
   authenticate,
-  requirePermissions(['users:update']),
+  (req, res, next) => {
+    const tokenUserId = (req.user && (req.user.id || req.user.uid || req.user.user_id || req.user.sub)) || req.userId || req.uid;
+    if (tokenUserId && req.params.id && String(tokenUserId) === String(req.params.id)) {
+      console.log("✅ RESULTADO: Eres el dueño. Pasando...");
+      return next();
+    }
+    return requirePermissions(['users:update'])(req, res, next);
+  },
   validate(userIdParamSchema, 'params'),
   validate(updateUserSchema),
   asyncHandler(usersController.update.bind(usersController))
